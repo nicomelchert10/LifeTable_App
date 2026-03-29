@@ -78,31 +78,23 @@ $$q_x = \frac{d_x}{n_{x-1}}$$
 
 $$L_x = \frac{l_x + l_{x+1}}{2}$$
 
-- **Días por vivir:** Número total de días que quedan de vida a los sobrevivientes que han alcanzado la edad x
+* **Días por vivir ($T_x$):** Número total de días que quedan de vida a los sobrevivientes que han alcanzado la edad $x$.
+$$T_x = \sum L_x$$
 
-$$T_x$$ = $$\sum L_x$$
+* **Esperanza de vida ($E_x$):**
+$$E_x = \frac{T_x}{l_x}$$
 
+* **Fecundidad específica ($m_x$):** Promedio de descendencia producida por unidad de tiempo.
+$$m_x$$
 
-- **Esperanza de vida:**
+* **Tasa neta de reproducción ($R_0$):** Número promedio de progenie hembra capaz de ser producido por cada hembra de la población durante toda su vida.
+$$R_0 = \sum l_x m_x$$
 
-$$E_x$$= $$\frac{T_x}{lx}$$
+* **Tiempo generacional ($T$):** Tiempo promedio entre dos generaciones sucesivas.
+$$T = \frac{\sum x l_x m_x}{R_0}$$
 
-- **Fecundidad específica:** Promedio de descendencia producida por unidad de tiempo.
-
-$$mx$$
-
-- **Tasa neta de reproducción:** Número promedio de progenie hembra capaz de ser producido por cada hembra de la población durante toda su vida
-
-$$R_0$$ = $$\sum l_x m_x$$
-
-- **Tiempo generacional:** Tiempo promedio entre dos generaciones sucesivas
-
-$$T$= $\frac{\sum x l_x m_x}{R_0}$$
-
-
-- **Tasa intrínseca de crecimiento :** Capacidad de una población de  multiplicarse en el lapso de una generación en condiciones ideales.
-
-$$r_m$$ = $$\frac {ln R_0}{T}$$
+* **Tasa intrínseca de crecimiento ($r_m$):** Capacidad de una población de multiplicarse en el lapso de una generación en condiciones ideales.
+$$r_m = \frac{\ln R_0}{T}$$
 
 - **Tasa finita de multiplicación:** Número de individuos que se agrega a la población por individuo y por unidad de tiempo
 
