@@ -72,11 +72,11 @@ $$lx$$
 
 - **Probabilidad de mortalidad:** tasa de mortalidad específica por edad:
 
-$$qx$$=$$\frac{dx}{n_x_-_1}$$
+$$q_x = \frac{d_x}{n_{x-1}}$$
 
 - **Media de la probabilidad de supervivencia entre dos edades sucesivas:**
 
-$$L_x$$= $$\frac{[lx + l_(x+1)]}{2}$$
+$$L_x = \frac{l_x + l_{x+1}}{2}$$
 
 - **Días por vivir:** Número total de días que quedan de vida a los sobrevivientes que han alcanzado la edad x
 
