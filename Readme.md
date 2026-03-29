@@ -32,7 +32,7 @@
 
 ## Demo 🚀
 
-Accedé a la aplicación aqui : **[https://tu-usuario.github.io/lifetable-app/](https://tu-usuario.github.io/lifetable-app/)**
+Accedé a la aplicación aqui : **[Life Table App]([https://tu-usuario.github.io/lifetable-app/](https://lifetable-app.vercel.app))**
 
 --------
 
