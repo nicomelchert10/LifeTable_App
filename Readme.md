@@ -110,13 +110,13 @@ $$DT = \frac{\ln 2}{r_m}$$
 
 ------------------
 
-##👤 Autor
+## 👤 Autor
 **Dr. Alejandro Nicolás Melchert | Biólogo | Especialista en Entomología Agrícola**
 
 
 -------
 
-##🤝 Contacto y Colaboración
+## 🤝 Contacto y Colaboración
 Si tenés dudas técnicas, sugerencias de mejora o encontrás algún bug en el laboratorio, podés contactarme:
 
 - **Email:** nicomelchert.10@gmail.com
