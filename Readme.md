@@ -96,15 +96,13 @@ $$T = \frac{\sum x l_x m_x}{R_0}$$
 * **Tasa intrínseca de crecimiento ($r_m$):** Capacidad de una población de multiplicarse en el lapso de una generación en condiciones ideales.
 $$r_m = \frac{\ln R_0}{T}$$
 
-- **Tasa finita de multiplicación:** Número de individuos que se agrega a la población por individuo y por unidad de tiempo
+- **Tasa finita de multiplicación ($\lambda$):** Número de individuos que se agregan a la población por individuo y por unidad de tiempo.
+$$\lambda = e^{r_m}$$
 
-$$\lambda$$=$$e^{rm}$$
+- **Tiempo de duplicación ($DT$):** Tiempo necesario para que el tamaño de la población se duplique bajo las condiciones actuales de crecimiento.
+$$DT = \frac{\ln 2}{r_m}$$
 
-- **Tiempo de duplicación:** Tiempo necesario para que el tamaño de la población se duplique bajo las condiciones actuales de crecimiento
-
-$$DT$$=$$\frac {ln 2}{rm}$$
-
-----------
+--------
 
 ## Referencias
 -  Rabinovich, J. E. (1978). Ecología de poblaciones animales.
