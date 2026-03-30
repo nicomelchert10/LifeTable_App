@@ -144,6 +144,15 @@ function App() {
   const loadSession = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    
+    if (!file.name.endsWith('.json')) {
+      alert("Por favor, selecciona un archivo .json válido generado por esta app.");
+      e.target.value = null; 
+      return;
+    }
+    
+
     const reader = new FileReader();
     reader.onload = (event) => {
       try {

@@ -12,7 +12,7 @@ export default function MenuPrincipal ({setCurrentStep, loadSession}){
               Cargar Respaldo del Ensayo
               <input
                 type="file"
-                accept=".json"
+                accept="*/*"
                 onChange={loadSession}
                 style={{display:'none'}}/>
             </label>
