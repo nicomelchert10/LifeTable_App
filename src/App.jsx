@@ -156,7 +156,7 @@ function App() {
           setCurrentStep(loadedData.currentStep || 'dashboard');
         } else {
           
-          // MODO RETROCOMPATIBILIDAD: Por si subís un archivo viejo
+          // MODO RETROCOMPATIBILIDAD
           
           const legacyTreatment = {
             id: Date.now().toString(),
@@ -464,6 +464,19 @@ function App() {
           calculateTotalNymphDays={calculateTotalNymphDays}
         />
       )}
+
+      {/* FOOTER */}
+      <footer className="app-footer">
+        <p>
+          <strong>LifeTable App</strong> v1.0 &copy; {new Date().getFullYear()}
+        </p>
+        <p>
+          Desarrollado por Alejandro Nicolás Melchert PhD
+        </p>
+        <p style={{ fontSize: '0.75rem', marginTop: '10px', opacity: 0.7 }}>
+          Herramienta de código abierto para el cálculo de parámetros poblacionales y tablas de vida en laboratorio.
+        </p>
+      </footer>
 
     </div>
   )

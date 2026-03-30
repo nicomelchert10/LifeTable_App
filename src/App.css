@@ -467,3 +467,29 @@ button:active {
   }
   }
 
+/* FOOTER */
+.app-footer {
+  text-align: center;
+  padding: 30px 20px 20px 20px;
+  margin-top: 50px;
+  border-top: 1px dashed #333;
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.app-footer p {
+  margin: 5px 0;
+}
+
+.app-footer a {
+  color: #03A9F4;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.app-footer a:hover {
+  color: #FFCA28;
+}
+
+
+
