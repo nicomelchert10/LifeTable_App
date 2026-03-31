@@ -41,6 +41,10 @@ function App() {
   const lifeTable = activeTreatment ? activeTreatment.lifeTable : [];
   const day = activeTreatment ? activeTreatment.day : 0;
   const stageNames  = activeTreatment ? activeTreatment.stageNames  : [];
+
+  //SISTEMA DE GUARDADO NUEVO
+  const [showAutosavePrompt, setShowAutosavePrompt] = useState(false);
+  const [savedData, setSavedData] = useState(null);
   
    
 
@@ -52,25 +56,34 @@ function App() {
   useEffect(() => {
     const sesionGuardada = localStorage.getItem('lifeTableAutosave')
     if (sesionGuardada) {
-      if (window.confirm("Hay un experimento en curso guardado automáticamente. ¿Querés retomarlo?")) {
-        try {
-          const data = JSON.parse(sesionGuardada)
-          
-          // Ahora cargamos los tratamientos
-          setTreatments(data.treatments || [])
-          setActiveTreatmentId(data.activeTreatmentId || null)
-          setCurrentStep(data.currentStep || 'dashboard') // Lo mandamos al panel general
-          
-          setIsCounting(data.isCounting || false)
-          setCurrentCheckIndex(data.currentCheckIndex || 0)
-        } catch (error) {
-          console.error("Error al cargar el autoguardado")
-        }
-      } else {
-        localStorage.removeItem('lifeTableAutosave')
+      try {
+        setSavedData(JSON.parse(sesionGuardada));
+        setShowAutosavePrompt(true);
+      } catch (error){
+        console.error("Error al cargar el autoguardado");
       }
     }
+              
   }, [])
+
+  const acceptAutosave  = ()  =>  {
+    if  (savedData) {
+      setTreatments(savedData.treatments || [])
+      setActiveTreatmentId(savedData.activeTreatmentId  ||  null)
+      setCurrentStep(savedData.currentStep  ||  'dashboard')
+      setIsCounting(savedData.isCounting  || false)
+      setCurrentCheckIndex(savedData.currentCheckIndex  ||  0)
+    }
+    setShowAutosavePrompt(false)
+  }
+
+  const rejectAutosave  = ()  =>  {
+    localStorage.removeItem('lifeTableAutosave')
+    setShowAutosavePrompt(false)
+    setSavedData(null)
+  }
+
+  //SISTEMA DE AUTOGUARDADO NUEVO - FIN
 
   // GUARDAR AUTOMÁTICAMENTE cada vez que hacés un clic
   useEffect(() => {
@@ -419,6 +432,26 @@ function App() {
     <div className="container">
       <Toaster position="bottom-right" reverseOrder={false}/>
 
+      {/* CARTEL DE AUTOGUARDADO (Reemplaza al window.confirm) */}
+      {showAutosavePrompt && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Sesión en pausa</h3>
+            <p>
+              Hay un experimento guardado automáticamente de tu última sesión. ¿Querés retomarlo?
+            </p>
+            <div className="modal-buttons">
+              <button className="btn-primary" onClick={acceptAutosave}>
+                Sí, retomar experimento
+              </button>
+              <button className="btn-reject" onClick={rejectAutosave}>
+                No, borrar y empezar de cero
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       
       {currentStep === 'menu' && (
         <MenuPrincipal 
@@ -433,6 +466,7 @@ function App() {
           experimentData={setupData}
           handleConfigChange={handleConfigChange}
           startTable={startTable}
+          treatments={treatments} /*.. */
         />
       )}
 

@@ -2,11 +2,18 @@ export default function Configuracion({
   setCurrentStep, 
   experimentData, 
   handleConfigChange, 
-  startTable 
+  startTable,
+  treatments 
 }) {
   return (
     <div className="card">
-      <button className="btn-secondary" onClick={() => setCurrentStep('menu')}>&larr; Volver</button>
+      <button className="btn-secondary" onClick={() => {
+        if (treatments && treatments.length > 0){
+          setCurrentStep('dashboard');
+        } else  {
+          setCurrentStep('menu');
+        }
+      }}>&larr; Volver</button>
       <h2 style={{textAlign: 'center', margin: '20px 0'}}>Configurar Experimento</h2>
       
       <div className="form-group">
