@@ -202,7 +202,7 @@ function App() {
     e.target.value = null; 
   }
   const exportLifeTableCSV = () => {
-    // Calculamos Lx, Tx y ex para el archivo exportable
+    // se calcula Lx, Tx y ex para el archivo exportable
     const extendedLifeTable = lifeTable.map((row, index, array) => {
       const nextRow = array[index + 1];
       const nextLx = nextRow ? parseFloat(nextRow.lx) : parseFloat(row.lx);
@@ -218,7 +218,7 @@ function App() {
       extendedLifeTable[i].ex = lxValue > 0 ? (accumulatedT / lxValue) : 0;
     }
 
-    // Armamos el encabezado con los nombres exactos
+    // Encabezado con los nombres exactos
     let csvContent = "Edad (x),Vivos (nx),Muertos (dx),Supervivencia (lx),Prob. de mortalidad (qx),Sobrev. Media (Lx),Dias por vivir (Tx),Esperanza de vida (ex)\n";
     
     extendedLifeTable.forEach(row => {
@@ -229,38 +229,71 @@ function App() {
   }
 
   const exportMatrixCSV = () => {
-    let headers = ["ID", "Estado", "Actual"];
+    // Encabezados dinámicos
+    let headers = ["ID", "Estado", "Sexo", "Ultimo Estadio"];
     stageNames.forEach(stage => headers.push(`Dias ${stage}`));
     headers.push("Total Inmaduro");
+    headers.push("Dias Adulto");
+
+    if (experimentData.checkFecundity !== false) {
+      headers.push("Total Huevos");
+    }
+
     let csvContent = headers.join(",") + "\n";
 
     individuals.forEach(bug => {
+      const sumEggs = (oviposition) => {
+        if (!oviposition) return 0;
+        return Object.values(oviposition).reduce((total, cant) => total + cant, 0);
+      };
+
+      const totalEggs = bug.sex === 'F' ? sumEggs(bug.oviposition) : '-';
+      // CORRECCIÓN 1: Usamos === en lugar de =
+      const sexString = bug.sex === 'M' ? 'Macho' : (bug.sex === 'F' ? 'Hembra' : '-');
+      const isAdult = bug.stage === 'ADULTO' || (bug.history['Muerte'] && bug.history['Muerte'].includes('ADULTO'));
+      const adultDays = isAdult ? bug.daysInStage : '-';
+
+      let ultimoEstadio = bug.stage;
+      if (bug.status === 'DEAD' && bug.history['Muerte']) {
+        const partesMuerte = bug.history['Muerte'].split(' en ');
+        if (partesMuerte.length > 1) {
+            ultimoEstadio = partesMuerte[1];
+        }
+      }
+
+      
       let row = [
         bug.id,
         bug.status === 'DEAD' ? 'Muerto' : 'Vivo',
-        bug.status === 'DEAD' ? '-' : bug.stage
+        sexString,
+        ultimoEstadio
       ];
 
       stageNames.forEach(stage => {
         const hasCompleted = bug.history[stage] !== undefined;
         const isCurrent = bug.stage === stage;
-        //const isDead = bug.status === 'DEAD';
 
         if (hasCompleted) {
-          row.push(bug.history[stage]); // Si completó el estadio, se muestran los días que le tomó
+          row.push(bug.history[stage]);
         } else if (isCurrent) {
-          row.push(bug.daysInStage); // Si es el estadio actual, se muestran los días que vivió ahi (VIVO O MUERTO)
+          row.push(bug.status === 'DEAD' ? bug.daysInStage : `(${bug.daysInStage}...)`);
         } else if (bug.status === 'DEAD') {
-          row.push('MI'); //si está muerto, y no completo ni era su estadio actual significa que nunca llegó a ese estadio
+          row.push('MI');
         } else {
-          row.push('-'); //si está vivo pero todavia no llegó a este estadio
+          row.push('-'); 
         }
       });
 
-      const totalNymph = bug.status === 'DEAD' ? 'MI' : calculateTotalNymphDays(bug);
+      const totalNymph = bug.status === 'DEAD' && bug.stage !== 'ADULTO' ? 'MI' : calculateTotalNymphDays(bug);
       row.push(totalNymph);
+      row.push(adultDays);
+      
+      if (experimentData.checkFecundity !== false) {
+        row.push(totalEggs);
+      }
       csvContent += row.join(",") + "\n";
     });
+    
     downloadCSV(csvContent, `MatrizIndividuos_${experimentData.name}_Dia${day}.csv`);
   }
 
