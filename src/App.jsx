@@ -29,7 +29,8 @@ function App() {
     n0: '',
     cycleType:  'hemimetabolous',
     stageCount: '',
-    checkMolt:'false',
+    checkMolt:  false,
+    checkFecundity: true 
   })
 
   /// Variables derivadas
@@ -126,7 +127,7 @@ function App() {
     stageNames.forEach(stage => {
       if (typeof bug.history[stage] === 'number') {
         total += bug.history[stage];
-      } else if (bug.stage === stage && bug.status !== 'DEAD') {
+      } else if (bug.stage === stage) {
         total += bug.daysInStage;
       }
     });
@@ -243,16 +244,16 @@ function App() {
       stageNames.forEach(stage => {
         const hasCompleted = bug.history[stage] !== undefined;
         const isCurrent = bug.stage === stage;
-        const isDead = bug.status === 'DEAD';
+        //const isDead = bug.status === 'DEAD';
 
         if (hasCompleted) {
-          row.push(bug.history[stage]);
-        } else if (isCurrent && !isDead) {
-          row.push(bug.daysInStage); 
-        } else if (isDead && !hasCompleted) {
-          row.push('MI');
+          row.push(bug.history[stage]); // Si completó el estadio, se muestran los días que le tomó
+        } else if (isCurrent) {
+          row.push(bug.daysInStage); // Si es el estadio actual, se muestran los días que vivió ahi (VIVO O MUERTO)
+        } else if (bug.status === 'DEAD') {
+          row.push('MI'); //si está muerto, y no completo ni era su estadio actual significa que nunca llegó a ese estadio
         } else {
-          row.push('-');
+          row.push('-'); //si está vivo pero todavia no llegó a este estadio
         }
       });
 
@@ -283,20 +284,23 @@ function App() {
   const startTable = () => {
     const n0 = parseInt(setupData.n0)
     const stages = parseInt(setupData.stageCount)
+    const registraMudas= setupData.checkMolt  === true || setupData.checkMolt === 'true'
     
-    if (!setupData.name || isNaN(n0) || n0 <= 0 || isNaN(stages) || stages <= 0) {
-      toast.error("Por favor completá el nombre, el N° inicial y la cantidad de estadíos (mayores a 0)", {
+    if (!setupData.name || !setupData.date || isNaN(n0) || n0 <= 0 ) {
+      toast.error("Por favor completá el nombre, la fecha de inicio y el N° inicial", {
         style:  {borderRadius:'8px', background:  '#333', color:  '#fff'}
       });
       return
     }
 
     const generatedStages = []
-    if (setupData.cycleType === 'hemimetabolous') {
-      for (let i = 1; i <= stages; i++) generatedStages.push(`N${i}`)
-    } else {
-      for (let i = 1; i <= stages; i++) generatedStages.push(`L${i}`)
-      generatedStages.push('PUPA')
+    if  (registraMudas){
+      if (setupData.cycleType === 'hemimetabolous') {
+        for (let i = 1; i <= stages; i++) generatedStages.push(`N${i}`)
+      } else {
+        for (let i = 1; i <= stages; i++) generatedStages.push(`L${i}`)
+        generatedStages.push('PUPA')
+      }
     }
     
     
@@ -304,8 +308,13 @@ function App() {
     for (let i = 1; i <= n0; i++) {
       
       newIndividuals.push({ 
-        id: i, status: 'ALIVE', stage: generatedStages[0], daysInStage: 0, history: {}, 
-        sex: null, oviposition: {} 
+        id: i, 
+        status: 'ALIVE', 
+        stage: registraMudas  ? generatedStages[0]  : 'ADULTO',
+        daysInStage: 0,
+        history: {}, 
+        sex: null, 
+        oviposition: {} 
       })
     }
 
@@ -321,7 +330,7 @@ function App() {
     
     setTreatments([...treatments, newTreatment])
     setActiveTreatmentId(newTreatment.id)
-    setSetupData({name: '', settings: '', date: '', n0: '', cycleType: 'hemimetabolous', stageCount: '', checkMolt: false})
+    setSetupData({name: '', settings: '', date: '', n0: '', cycleType: 'hemimetabolous', stageCount: '', checkMolt: false, checkFecundity:  true})
     
     setCurrentStep('table')
   }
