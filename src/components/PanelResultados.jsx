@@ -90,7 +90,8 @@ export default function PanelResultados({
         <div className="header-info">
           <h2 style={{margin: '0 0 5px 0'}}>{experimentData.name}</h2>
           <p className="text-muted" style={{margin: 0}}>
-            Día {day} | N0: {experimentData.n0} | Estadíos: {experimentData.stageCount}
+            Día {day} | N0: {experimentData.n0}
+            {experimentData.checkMolt ?` | Estadíos: ${experimentData.stageCount}` : ''}
           </p>
         </div>
       
@@ -177,7 +178,10 @@ export default function PanelResultados({
               ))}
               <th style={{ background: 'rgba(255, 255, 255, 0.1)' }}>Total Inmaduro</th>
               <th style={{ background: 'rgba(33, 150, 243, 0.1)' }}>Días Adulto</th>
-              <th style={{ background: 'rgba(233, 30, 99, 0.1)' }}>Total Huevos</th>
+              {experimentData.checkFecundity != false ?  ( //oculta la columna si checkFecundity es falso
+                <th style={{ background: 'rgba(233, 30, 99, 0.1)' }}>Total Huevos</th>
+              ) : null}
+              
             </tr>
           </thead>
           <tbody>
@@ -198,16 +202,18 @@ export default function PanelResultados({
                   {stageNames.map(stage => {
                     const hasCompleted = bug.history[stage] !== undefined;
                     const isCurrent = bug.stage === stage;
-                    const isDead = bug.status === 'DEAD';
+                    
 
                     let cellContent = '-';
                     let cellStyle = {};
 
                     if (hasCompleted) {
                       cellContent = bug.history[stage];
-                    } else if (isCurrent && !isDead) {
-                      cellContent = `(${bug.daysInStage}...)`;
-                    } else if (isDead && !hasCompleted) {
+                    } else if (isCurrent) {
+                      /// Muestra los días vividos en el estadio actual, aún si está muerto
+                      cellContent = bug.status  === 'DEAD'  ? bug.daysInStage : `(${bug.daysInStage}...)`;
+                    } else if (bug.status === 'DEAD') {
+                      /// Si está muerto y no completó este estadio, ni era el actual, pone MI
                       cellContent = 'MI';
                       cellStyle = { backgroundColor: '#d32f2f', color: 'white', fontWeight: 'bold' };
                     }
@@ -224,7 +230,10 @@ export default function PanelResultados({
                   </td>
 
                   <td style={{ fontWeight: 'bold', color: '#64B5F6' }}>{adultDays}</td>
-                  <td style={{ fontWeight: 'bold', color: '#F06292' }}>{totalEggs}</td>
+                  {experimentData.checkFecundity  !== false ? 
+                    (<td style={{ fontWeight: 'bold', color: '#F06292' }}>{totalEggs}</td>
+                  ): null}
+                
                 </tr>
               )
             })}
@@ -233,7 +242,7 @@ export default function PanelResultados({
       </div>
 
       {/* BOTÓN DESPLEGABLE ESTADÍSTICO  */}
-      {popData && popData.stats.R0 > 0 && (
+      { experimentData.checkFecundity !== false && popData && popData.stats.R0 > 0 && (
         <div style={{marginTop: '50px', textAlign: 'center'}}>
           <button 
             onClick={() => setShowStats(!showStats)}
@@ -249,7 +258,7 @@ export default function PanelResultados({
       )}
 
       {/* PANEL ESTADÍSTICO */}
-      {showStats && popData && (
+      { experimentData.checkFecundity !== false &&  showStats && popData && (
         <div style={{ background: 'linear-gradient(145deg, #1e1e1e, #2a2a2a)', border: '1px solid #4CAF50', borderRadius: '12px', padding: '20px', marginTop: '15px', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', marginBottom: '40px'}}>
           
           <div style={{display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'space-between', marginBottom: '30px'}}>

@@ -71,7 +71,7 @@ export default function ModoLupa({
         )}
 
         
-        {currentBug.stage === 'ADULTO' && localSex === 'F' && (
+        {experimentData.checkFecundity !== false && currentBug.stage === 'ADULTO' && localSex === 'F' && (
           <div style={{background: 'rgba(233, 30, 99, 0.1)', border: '1px solid #E91E63', padding: '15px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center'}}>
             <label style={{fontSize: '1.1rem', display: 'block', marginBottom: '10px', color: '#ffbadd'}}>
               Huevos puestos hoy:
