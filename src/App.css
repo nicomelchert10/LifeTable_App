@@ -67,6 +67,194 @@ h1, h2, h3 {
   box-sizing: border-box;
 }
 
+/* DASHBOARD / PANEL DE TRATAMIENTOS */
+
+.dashboard-card {
+  max-width: 800px;
+  margin: 40px auto 20px auto;
+}
+
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-subtitle {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.empty-treatments {
+  text-align: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
+.treatments-grid {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.treatment-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid #4CAF50;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.treatment-header {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.treatment-title {
+  margin: 0 0 5px 0;
+  color: white;
+}
+
+.treatment-info {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.treatment-actions {
+  display: flex;
+  align-items:  stretch;
+  gap: 10px;
+}
+.treatment-actions  .btn-primary  {
+  margin-top: 0;
+  width:  auto;
+}
+
+.btn-toggle-resume {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ccc;
+  padding: 0px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  white-space:  nowrap;
+}
+
+.btn-toggle-resume.expanded {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-toggle-resume:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Panel Desplegable */
+.treatment-summary-panel {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Barra de Supervivencia */
+.survival-section {
+  margin-bottom: 20px;
+}
+
+.survival-title {
+  margin: 0 0 5px 0;
+  font-size: 0.85rem;
+  color: #aaa;
+  font-weight: bold;
+}
+
+.survival-track {
+  width: 100%;
+  height: 12px;
+  min-height: 12px;
+  background: #d32f2f;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+}
+
+.survival-fill {
+  background: #4CAF50;
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.survival-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.label-alive {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.label-dead {
+  color: #ff5252;
+  font-weight: bold;
+}
+
+/* Grilla de Métricas */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+}
+
+.metric-box {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.metric-title {
+  margin: 0 0 5px 0;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.metric-value {
+  margin: 0;
+  font-size: 1.1rem;
+  color: white;
+  font-weight: bold;
+}
+
+/* Métrica de Huevos (Rosa) */
+.metric-box.eggs {
+  background: rgba(233, 30, 99, 0.05);
+  border: 1px solid rgba(233, 30, 99, 0.2);
+}
+
+.metric-title.eggs {
+  color: #F06292;
+}
+
+.metric-value.eggs {
+  color: #F06292;
+}
+
+/* Footer del Dashboard */
+.dashboard-footer {
+  text-align: center;
+  margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+}
+
+
 
 /* PANTALLA DE CONFIGURACIÓN */
 

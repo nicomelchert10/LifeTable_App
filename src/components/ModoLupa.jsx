@@ -83,7 +83,7 @@ export default function ModoLupa({
               onChange={(e) => setEggsToday(e.target.value)}
               style={{fontSize: '1.5rem', textAlign: 'center', width: '120px', padding: '10px', borderRadius: '8px', border: 'none'}}
               placeholder="0"
-              autoFocus
+              //autoFocus
             />
           </div>
         )}
