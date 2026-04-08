@@ -834,7 +834,6 @@ button:active {
 
 
 /* ANIMACIONES EXTRA */
-
 @keyframes pulse-warning {
   0% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -858,38 +857,22 @@ button:active {
   justify-content: center;
   gap: 8px;
 }
-/* FIN*/
 
-.icon-text {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.btn-icon-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-/* OPTIMIZACIÓN MÓVIL */
+/*  OPTIMIZACIÓN MÓVIL*/
 
 @media (max-width: 768px) {
   
-  /* Forzamos a que sea una columna */
+  /* --- 1. CABECERA Y BOTONES --- */
   .treatment-header {
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 12px !important;
   }
 
-  /* Aseguramos que el bloque de texto no se apriete */
   .treatment-header > div:first-child {
     width: 100% !important;
   }
 
-  /* Forzamos a los botones a usar el 100% del ancho */
   .treatment-actions {
     width: 100% !important;
     display: flex !important;
@@ -903,6 +886,7 @@ button:active {
     font-size: 0.9rem !important;
   }
 
+  /* --- 2. GRILLAS Y DESBORDAMIENTO --- */
   .treatment-item {
     padding: 15px !important; 
     width: 100% !important;
@@ -921,10 +905,8 @@ button:active {
     gap: 12px !important;
   }
 
- 
   .metric-box {
     width: 100% !important;
     box-sizing: border-box !important;
   }
 }
-
