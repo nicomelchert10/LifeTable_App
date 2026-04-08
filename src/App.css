@@ -877,33 +877,54 @@ button:active {
 
 @media (max-width: 768px) {
   
-  */
+  /* Forzamos a que sea una columna */
   .treatment-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
   }
 
- 
+  /* Aseguramos que el bloque de texto no se apriete */
+  .treatment-header > div:first-child {
+    width: 100% !important;
+  }
+
+  /* Forzamos a los botones a usar el 100% del ancho */
   .treatment-actions {
-    width: 100%;
-    display: flex;
-    flex-direction: row; 
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
     gap: 10px;
   }
 
- 
   .treatment-actions button {
-    flex: 1; 
-    padding: 10px 4px; 
-    font-size: 0.9rem; 
-    white-space: nowrap; 
+    flex: 1 !important;
+    padding: 10px 4px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .treatment-item {
+    padding: 15px !important; 
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .survival-section {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .metrics-grid {
+    display: flex !important;
+    flex-direction: column !important; 
+    width: 100% !important;
+    gap: 12px !important;
   }
 
  
-  .treatment-info {
-    display: flex;
-    flex-wrap: wrap; 
-    line-height: 1.6;
+  .metric-box {
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 }
+
