@@ -234,6 +234,7 @@ function App() {
     stageNames.forEach(stage => headers.push(`Dias ${stage}`));
     headers.push("Total Inmaduro");
     headers.push("Dias Adulto");
+    headers.push("Longevidad Total");
 
     if (experimentData.checkFecundity !== false) {
       headers.push("Total Huevos");
@@ -252,6 +253,13 @@ function App() {
       const sexString = bug.sex === 'M' ? 'Macho' : (bug.sex === 'F' ? 'Hembra' : '-');
       const isAdult = bug.stage === 'ADULTO' || (bug.history['Muerte'] && bug.history['Muerte'].includes('ADULTO'));
       const adultDays = isAdult ? bug.daysInStage : '-';
+
+      let totalLongevity  =bug.daysInStage;
+      Object.values(bug.history).forEach(val  =>  {
+        if  (typeof val === 'number') {
+          totalLongevity  += val;
+        }
+      });
 
       let ultimoEstadio = bug.stage;
       if (bug.status === 'DEAD' && bug.history['Muerte']) {
@@ -287,6 +295,7 @@ function App() {
       const totalNymph = bug.status === 'DEAD' && bug.stage !== 'ADULTO' ? 'MI' : calculateTotalNymphDays(bug);
       row.push(totalNymph);
       row.push(adultDays);
+      row.push(totalLongevity);
       
       if (experimentData.checkFecundity !== false) {
         row.push(totalEggs);

@@ -99,7 +99,7 @@ export default function PanelResultados({
         <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
 
         <button className="btn-back" onClick={() => setCurrentStep('dashboard')}>
-          &larr; Volver al Panel
+          &larr; Volver al Panel de Ensayos
         </button>
         
         <button className="btn-back" onClick={saveSession}>
@@ -107,7 +107,7 @@ export default function PanelResultados({
         </button>
         </div>
         <small style={{ fontSize: '0.75rem', color: '#888', maxWidth: '250px', textAlign: 'right' }}>
-          Guarda el estado actual de la mesada. Para analizar en R o Excel, exportá los CSV más abajo.
+          Guarda el estado actual del ensayo. Para analizar en R o Excel, exportá los CSV más abajo.
         </small>
         
         </div>
@@ -120,7 +120,7 @@ export default function PanelResultados({
 
       {/* TABLA 1: RESUMEN POBLACIONAL */}
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px', marginBottom: '15px'}}>
-        <h3 style={{margin: 0}}>📊 Tabla de Vida General (lx)</h3>
+        <h3 style={{margin: 0}}>📊 Tabla de Vida General</h3>
         <button className="btn-export" onClick={exportLifeTableCSV}>
           📥 Exportar CSV
         </button>
@@ -178,6 +178,7 @@ export default function PanelResultados({
               ))}
               <th style={{ background: 'rgba(255, 255, 255, 0.1)' }}>Total Inmaduro</th>
               <th style={{ background: 'rgba(33, 150, 243, 0.1)' }}>Días Adulto</th>
+              <th style={{ background: 'rgba(33, 150, 243, 0.1)' }}>Longevidad Total</th>
               {experimentData.checkFecundity != false ?  ( //oculta la columna si checkFecundity es falso
                 <th style={{ background: 'rgba(233, 30, 99, 0.1)' }}>Total Huevos</th>
               ) : null}
@@ -190,6 +191,14 @@ export default function PanelResultados({
               const sexIcon = bug.sex === 'M' ? '♂️' : (bug.sex === 'F' ? '♀️' : '-');
               const isAdult = bug.stage === 'ADULTO' || (bug.history['Muerte'] && bug.history['Muerte'].includes('ADULTO'));
               const adultDays = isAdult ? bug.daysInStage : '-';
+
+              let totalLongevity  = bug.daysInStage;
+              Object.values(bug.history).forEach(val  =>  {
+                if  (typeof val === 'number') {
+                  totalLongevity  +=  val;
+                }
+              });
+              
 
               return (
                 <tr key={bug.id}>
@@ -230,6 +239,9 @@ export default function PanelResultados({
                   </td>
 
                   <td style={{ fontWeight: 'bold', color: '#64B5F6' }}>{adultDays}</td>
+
+                  <td style={{  fontWeight: 'bold', color: '#FFCA28' }}>{totalLongevity }</td>
+              
                   {experimentData.checkFecundity  !== false ? 
                     (<td style={{ fontWeight: 'bold', color: '#F06292' }}>{totalEggs}</td>
                   ): null}
