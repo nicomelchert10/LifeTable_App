@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { ChartBar, Download, FileChartLine, ChevronUp, ChevronDown} from 'lucide-react'
+
 
 export default function PanelResultados({
   setCurrentStep, experimentData, day, saveSession, startDailyCheck, exportLifeTableCSV, exportMatrixCSV, lifeTable, stageNames, individuals, calculateTotalNymphDays
@@ -120,9 +122,10 @@ export default function PanelResultados({
 
       {/* TABLA 1: RESUMEN POBLACIONAL */}
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px', marginBottom: '15px'}}>
-        <h3 style={{margin: 0}}>📊 Tabla de Vida General</h3>
+        <h3 style={{margin: 0,  display:  'flex', alignItems: 'center', gap:  '8px'}}>
+          <ChartBar size={24}/> Tabla de Vida General</h3>
         <button className="btn-export" onClick={exportLifeTableCSV}>
-          📥 Exportar CSV
+          <Download size={20}/> Exportar CSV
         </button>
       </div>
 
@@ -162,7 +165,7 @@ export default function PanelResultados({
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop:'50px', marginBottom:'15px'}}>
         <h3 style={{margin: 0}}> Tabla de Seguimiento Individual</h3>
         <button className="btn-export" onClick={exportMatrixCSV}>
-          📥 Exportar CSV
+          <Download size={20}/> Exportar CSV
         </button>
       </div>
       
@@ -264,7 +267,15 @@ export default function PanelResultados({
               borderRadius: '8px', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 'bold', width: '100%'
             }}
           >
-            {showStats ? 'Ocultar Análisis de Fecundidad ▴' : '📊 Ver Análisis Reproductivo ▾'}
+            {showStats ? (
+              <span style={{  display:  'flex', alignItems: 'center', justifyContent:'center', gap: '8px'}}>
+                Ocultar Análisis Reproductivo <ChevronUp size={20}/>
+              </span> 
+            ) : (
+              <span style={{  display:  'flex', alignItems: 'center' ,  justifyContent: 'center', gap:  '8px'}}>
+                <FileChartLine size={20}/> Ver Análisis Reproductivo <ChevronDown size={20}/>
+              </span>
+            )}
           </button>
         </div>
       )}
