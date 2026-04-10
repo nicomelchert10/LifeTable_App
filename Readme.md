@@ -10,37 +10,46 @@
 
 ![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)
 
-###### LifeTable App nace para modernizar el trabajo de mesada. Permite a los investigadores registrar supervivencia, mudas y fecundidad directamente frente al estereomicroscopio, minimizando el error humano de la transcripción del papel al software.
+###### LifeTable App nace para modernizar el trabajo de laboratorio. Permite a los investigadores registrar supervivencia, mudas y fecundidad directamente frente al estereomicroscopio, minimizando el error humano de la transcripción del papel al software y ofreciendo un dashboard analítico en tiempo real.
 
 ------------
 
+### 🚀 Novedades en la Versión 1.1.0
+
+- **Configuración adaptativa del ensayo:** Ahora es posible elegir que variables registrar 
+(mudas y/o fecundidad). Esto permite adaptar la interfaz a diferentes diseños experimentales, como bioensayos de toxicidad, pruebas de mortalidad o estudios de supervivencia en estadios especificos.
+- **Dashboard Analítico por Tratamiento:** Visualizá métricas del ensayo (Longevidad Media/Máxima, Desarrollo Ninfal y Proporción Sexual) sin salir del panel principal.
+- **Visualización de Estado:** Barras dinámicas de Supervivencia vs. Mortalidad para cada cohorte.
+- **Optimización Móvil:** UX refinada en el Modo Lupa para evitar despliegues accidentales del teclado en dispositivos táctiles.
 
 ### Características
 
-- **Modo Lupa:** Interfaz con botones grandes diseñada para ser usada con una sola mano mientras se observa por el microscópio estereoscópico
+- **Interfaz adaptativa:** Configurá tu experimento según tus necesidades. Desactiva los registros de fecundidad o mudas para obtener una interfaz simplificada, ideal para ensayos donde solo se evalua la supervivencia.
 
-- **Soporte para múltiples experimentos**: Panel de control que permite tener varios experimentos guardados, especialmente útil cuando se quieren comparar tratamientos.
+- **Modo Lupa:** Interfaz con botones grandes diseñada para ser usada con una sola mano mientras se observa por el microscópio estereoscópico, optimizada para tablets y celulares
 
-- **Cálculos en Tiempo Real:** Generación automática de parámetros poblacionales.
+- **Soporte para múltiples experimentos:** Panel de control que permite tener varios experimentos guardados, especialmente útil cuando se quieren comparar tratamientos.
+
+- **Estadísticas Descriptivas Automáticas:** Resumen dinámico de cada tratamiento.
 
 - **Soporte para dos modelos de metamorfosis:** Configuración para insectos hemimetábolos y holometábolos.
 
-- **Exportación de tablas**: Descarga de tablas con datos en formato `.csv` listas para analizar en **R**,  **Excel**, o el software estadístico de preferencia.
+- **Exportación de tablas:** Descarga de tablas con datos en formato `.csv` listas para analizar en **R**,  **Excel**, o el software estadístico de preferencia.
 
 
 ------------
 
 ## Demo 🚀
 
-Accedé a la aplicación aqui : **[Life Table App]([https://tu-usuario.github.io/lifetable-app/](https://lifetable-app.vercel.app))**
+Accedé a la aplicación aqui : **[Life Table App](https://lifetableapp.vercel.app)**
 
 --------
 
 ## 📱 Cómo utilizar LifeTable App
 
-1. **Configuración:** Definí el nombre del tratamiento, condiciones del experimento, número inicial de individuos y el tipo de desarrollo (Hemimetábolo/Holometábolo).
+1. **Configuración:** Definí el nombre del tratamiento, condiciones del experimento, número inicial de individuos, registro de mudas y el tipo de desarrollo (Hemimetábolo/Holometábolo). Podés elegir no registrar mudas ni fecundidad y hacer ensayos de supervivencia o toxicidad
 2. **Registro Diario:** Usá el **Modo Lupa** para marcar Supervivencia, Mudas o Fecundidad.
-3. **Monitoreo:** Revisá la el panel de resultados para obtener los parámetros poblacionales y ver el progreso de cada individuo.
+3. **Monitoreo:** Revisá el panel de resultados y el resumen del ensayo para obtener los parámetros poblacionales y ver el progreso de cada individuo.
 4. **Análisis:** Una vez finalizado el ciclo, exportá los resultados en `.csv` si querés realizar análisis estadísticos utilizando un software externo
 
 ------------

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import localforage from 'localforage'
 import './App.css'
 import { Toaster, toast}  from  'react-hot-toast'
 
@@ -50,20 +51,19 @@ function App() {
    
 
   // 
-  //  SISTEMA DE AUTOGUARDADO (en localStorage)
+  //  SISTEMA DE AUTOGUARDADO (en con localforage / IndexedDB)
   // 
 
   // AL ABRIR LA APP: Buscar si hay un experimento guardado
   useEffect(() => {
-    const sesionGuardada = localStorage.getItem('lifeTableAutosave')
-    if (sesionGuardada) {
-      try {
-        setSavedData(JSON.parse(sesionGuardada));
+    localforage.getItem('lifeTableAutosave').then((sesionGuardada) =>{
+      if (sesionGuardada) {
+        setSavedData(sesionGuardada);
         setShowAutosavePrompt(true);
-      } catch (error){
-        console.error("Error al cargar el autoguardado");
       }
-    }
+    }) .catch(error =>  {
+       console.error("Error al cargar el autoguardado de IndexedDB:",error);
+    });
               
   }, [])
 
@@ -79,12 +79,15 @@ function App() {
   }
 
   const rejectAutosave  = ()  =>  {
-    localStorage.removeItem('lifeTableAutosave')
-    setShowAutosavePrompt(false)
-    setSavedData(null)
+    localforage.removeItem('lifeTableAutosave').then(() =>  {
+      setShowAutosavePrompt(false)
+      setSavedData(null)
+    }).catch(error  =>  {
+      console.error("Error al borrar el autoguardado:", error);
+    });
   }
 
-  //SISTEMA DE AUTOGUARDADO NUEVO - FIN
+  
 
   // GUARDAR AUTOMÁTICAMENTE cada vez que hacés un clic
   useEffect(() => {
@@ -97,11 +100,13 @@ function App() {
         isCounting, 
         currentCheckIndex
       }
-      localStorage.setItem('lifeTableAutosave', JSON.stringify(sesionActual))
+      localforage.setItem('lifeTableAutosave', sesionActual).catch(error  =>  {
+        console.error("Error guardando la sesion en IndexedDB", error);
+      });
     }
   }, [treatments, activeTreatmentId, currentStep, isCounting, currentCheckIndex])
 
-  // 
+  // SISTEMA DE AUTOGUARDADO NUEVO FIN
 
   // FUNCIONES AUXILIARES 
   const getNextStage = (currentStage) => {

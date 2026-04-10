@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {Calendar, ChevronDown, ChevronUp, ArrowRight, PlusCircle, Venus, Mars} from 'lucide-react'
 
 export default function Dashboard({ treatments, setActiveTreatmentId, setCurrentStep, setTreatments }) {
   
@@ -37,6 +38,7 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
             let eggsTotal = 0,  femaleCount = 0;
             let males = 0,  females = 0;
             let maxLongevidad = 0;
+            let ninfasVivas = 0;
 
             t.individuals.forEach(bug =>  {
               //Proporción Sexual
@@ -65,6 +67,11 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
                 deadCount++;
               }
 
+              //REVISAR SI QUEDAN NINFAS O MURIERON/SON ADULTOS
+              if (bug.status  !== 'DEAD'  &&  bug.stage !== 'ADULTO')  {
+                ninfasVivas++;
+              }
+
               // Desarrollo Ninfal (solo de los que llegaron a adulto)
               const isAdult = bug.stage === 'ADULTO'  ||  (bug.history['Muerte']  &&  bug.history['Muerte'].includes('ADULTO'));
               if  (isAdult  &&  t.config.checkMolt  !== false){
@@ -80,11 +87,22 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
             });
 
             const isOngoing = vivos > 0;  // Verificamos si quedan vivos
-            const devNinfal = ninfalCount > 0 ? (ninfalTotal / ninfalCount).toFixed(1) + ' días' : '-';
+            const isNinfalOngoing=  ninfasVivas > 0;
+            const devNinfal = isNinfalOngoing ? 'En curso...' : (ninfalCount > 0 ? (ninfalTotal / ninfalCount).toFixed(1) + ' días' : '-');
             const longevidad = isOngoing  ? 'En curso...' : (deadCount > 0 ? (longTotal / deadCount).toFixed(1) + ' días' : '-');
             const promHuevos = femaleCount > 0 ? (eggsTotal / femaleCount).toFixed(1) + ' h/♀' : '-';
             const totalSexed = males + females;
-            const propSexos = totalSexed > 0 ? `♀ ${females} : ♂ ${males}` : '-';
+            const propSexos = totalSexed > 0 ? (
+              <span style={{display: 'inline-flex', alignItems: 'center', gap: '8px', fontWeight: '500'}}>
+                <span style={{  color:  '#FF758F', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <Venus size={16}/>  {females}
+                </span>
+                <span style={{colro: '#777'}}>:</span>
+                <span style={{ color: '#4DA6FF', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <Mars size={16}/> {males}
+                </span>
+              </span>
+            ): '-';
 
             const isExpanded = expandedId === t.id;
 
@@ -97,7 +115,8 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
                   <div>
                     <h3 className="treatment-title">{t.config.name}</h3>
                     <p className="text-muted treatment-info">
-                      📅 Día actual: <strong>{t.day}</strong> | Sobrevivientes: <strong>{vivos} / {n0}</strong>
+                      <span ClassName="icon-text">
+                      <Calendar size={16}/> Día actual: <strong>{t.day}</strong> </span> | Sobrevivientes: <strong>{vivos} / {n0}</strong>
                     </p>
                   </div>
                   
@@ -105,15 +124,18 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
                     <button 
                       onClick={() => toggleExpand(t.id)}
                       className={`btn-toggle-resume ${isExpanded ? 'expanded' : ''}`}>
-
-                      {isExpanded ? 'Ocultar Resumen ▴' : 'Ver Resumen ▾'}
+                      <span className="btn-icon-center">
+                      {isExpanded ? 'Ocultar Resumen ' : 'Ver Resumen '}
+                      {isExpanded ? <ChevronUp  size={18}/> : <ChevronDown size={18}/>}
+                      </span>
                     </button>
 
                     <button className="btn-primary" onClick={() => {
                       setActiveTreatmentId(t.id);
                       setCurrentStep('table');
                     }}>
-                      Abrir Ensayo &rarr;
+                      <span className="btn-icon-center">
+                      Abrir Ensayo <ArrowRight size={18}/></span>
                     </button>
                   </div>
                 </div>
@@ -139,16 +161,23 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
                       
                       {t.config.checkMolt !== false && (
                         <div className="metric-box">
-                          <p className="metric-title">Desarrollo Ninfal Medio</p>
-                          <p className="metric-value">{devNinfal}</p>
+                          <p className="metric-title" >Desarrollo Ninfal Medio</p>
+                          <p 
+                             className={`metric-value ${isNinfalOngoing ? 'status-ongoing' : ''}`}
+                              style={{ 
+                                         fontSize: isNinfalOngoing ? '0.95rem' : '1.1rem', 
+                                         color: isNinfalOngoing ? '#FFCA28' : 'white'
+                          }}>{devNinfal}</p>
                         </div>
                       )}
 
                       <div className="metric-box">
                         <p className="metric-title">Longevidad Media</p>
-                        <p className="metric-value" style={{ 
-                          fontSize: isOngoing ? '0.95rem' : '1.1rem', 
-                          color: isOngoing ? '#FFCA28' : 'white'}}>{longevidad}</p>
+                        <p 
+                           className={`metric-value ${isOngoing ? 'status-ongoing' : ''}`}
+                            style={{ 
+                                         fontSize: isOngoing ? '0.95rem' : '1.1rem', 
+                                        color: isOngoing ? '#FFCA28' : 'white'}}>{longevidad}</p>
                       </div>
 
                       <div className="metric-box">
@@ -182,7 +211,8 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
           setActiveTreatmentId(null);
           setCurrentStep('setup');
         }}>
-          + Agregar Nuevo
+          <span className="btn-icon-center">
+          <PlusCircle size={18} /> Agregar Nuevo</span>
         </button>
       </div>
     </div>
