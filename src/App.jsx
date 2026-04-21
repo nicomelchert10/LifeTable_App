@@ -545,6 +545,7 @@ function App() {
           currentCheckIndex={currentCheckIndex}
           individuals={individuals}
           onUndo={handleUndoLupa}
+          onCancel={()  =>  setIsCounting(false)}
         />
       )}
 
@@ -567,7 +568,7 @@ function App() {
       {/* FOOTER */}
       <footer className="app-footer">
         <p>
-          <strong>LifeTable App</strong> v1.0 &copy; {new Date().getFullYear()}
+          <strong>LifeTable App</strong> v1.1.0 &copy; {new Date().getFullYear()}
         </p>
         <p>
           Desarrollado por Alejandro Nicolás Melchert PhD
