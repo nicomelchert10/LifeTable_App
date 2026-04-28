@@ -11,7 +11,7 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
   };
   
   return (
-    <div className="card dashboard-card">
+    <div className="card dashboard-card screen-transition">
       <h2 className="dashboard-title">Panel de Ensayos</h2>
       
       <p className="text-muted dashboard-subtitle">

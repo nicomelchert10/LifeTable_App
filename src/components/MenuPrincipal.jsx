@@ -1,6 +1,6 @@
 export default function MenuPrincipal ({setCurrentStep, loadSession}){
     return(
-        <div className="card" style={{textAlign: 'center', marginTop: '100px'}}>
+        <div className="card screen-transition" style={{textAlign: 'center', marginTop: '100px'}}>
           <h1>LifeTable App </h1>
           <p className="text-muted">Seguimiento individual de cohortes y cálculo de tabla de vida</p>
           <div style={{marginTop: '30px'}}>
@@ -16,7 +16,7 @@ export default function MenuPrincipal ({setCurrentStep, loadSession}){
                 onChange={loadSession}
                 style={{display:'none'}}/>
             </label>
-            <small className="text-muted" style={{marginTop:  '8px',  fontSize: '0.85rem',  maxWidth: '300px'}}>
+            <small className="text-muted" style={{display: 'block', marginTop:  '8px',  fontSize: '0.85rem',  maxWidth: '300px'}}>
               *Seleccioná el archivo de respaldo generado por la aplicación para continuar tu experimento.
             </small>
 

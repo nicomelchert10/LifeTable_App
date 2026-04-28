@@ -70,8 +70,14 @@ export default function ModoLupa({
       <div className="lupa-header">
         
         {/* BARRA SUPERIOR: Cancelar a la izquierda, Deshacer al medio */}
-        <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '40px', marginBottom: '10px' }}>
-          <button className="btn-cancel-review" onClick={handleCancelReview} style={{ position: 'absolute', left: 0 }}>
+        <div style={{ display: 'flex',
+                     justifyContent: 'space-between',
+                     alignItems: 'center',
+                     flexWrap:  'wrap',
+                     gap: '10px', 
+                     minHeight: '40px', 
+                     marginBottom: '10px' }}>
+          <button className="btn-cancel-review" onClick={handleCancelReview} style={{ margin: 0,  padding:  '5px' }}>
             <ArrowLeft size={18} /> Cancelar Revisión
           </button>
 

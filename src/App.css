@@ -929,9 +929,7 @@ button:active {
   }
 }
 
-/* =========================================
-   1. TRANSICIONES DE PANTALLA Y PANELES
-   ========================================= */
+/*TRANSICIONES DE PANTALLA Y PANELES */
 
 /* Animación de entrada para todas las pantallas */
 .screen-transition {
@@ -955,9 +953,7 @@ button:active {
 }
 
 
-/* =========================================
-   2. INTERRUPTORES ESTILO APP NATIVA (Toggles)
-   ========================================= */
+/* INTERRUPTORES ESTILO APP NATIVA (Toggles)*/
 
 .toggle-checkbox {
   appearance: none;
