@@ -6,7 +6,7 @@ export default function Configuracion({
   treatments 
 }) {
   return (
-    <div className="card">
+    <div className="card screen-transition">
       <button className="btn-secondary" onClick={() => {
         if (treatments && treatments.length > 0){
           setCurrentStep('dashboard');

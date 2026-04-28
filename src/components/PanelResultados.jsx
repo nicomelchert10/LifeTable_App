@@ -87,7 +87,7 @@ export default function PanelResultados({
   //------------
 
   return (
-    <div>
+    <div className="screen-transition">
       <div className="table-header">
         <div className="header-info">
           <h2 style={{margin: '0 0 5px 0'}}>{experimentData.name}</h2>
