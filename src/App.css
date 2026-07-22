@@ -1014,3 +1014,27 @@ button:active {
 .toggle-label:has(.toggle-checkbox:checked)::before {
   right: 3px; 
 }
+
+/* BOTÓN DE FEEDBACK (FOOTER) */
+.btn-feedback {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ccc;
+  border: 1px solid #555;
+  padding: 10px 20px;
+  border-radius: 25px; 
+  text-decoration: none; 
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-feedback:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-color: #888;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
