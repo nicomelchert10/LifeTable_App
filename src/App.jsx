@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import localforage from 'localforage'
 import './App.css'
 import { Toaster, toast}  from  'react-hot-toast'
+import { Bug } from 'lucide-react'
 
 
 import MenuPrincipal from './components/MenuPrincipal'
@@ -567,6 +568,19 @@ function App() {
 
       {/* FOOTER */}
       <footer className="app-footer">
+
+        {/* BOTÓN DE FEEDBACK */}
+        <div style={{ marginBottom: '20px' }}>
+          <a 
+            href="https://forms.gle/HdnFnocSQNFVQACTA" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="btn-feedback"
+          >
+            <Bug size={20}/> Reportar un problema / Dejar Feedback
+          </a>
+        </div>
+
         <p>
           <strong>LifeTable App</strong> v1.1.0 &copy; {new Date().getFullYear()}
         </p>
