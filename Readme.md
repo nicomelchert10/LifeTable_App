@@ -10,31 +10,28 @@
 
 ![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)
 
-###### LifeTable App nace para modernizar el trabajo de laboratorio. Permite a los investigadores registrar supervivencia, mudas y fecundidad directamente frente al estereomicroscopio, minimizando el error humano de la transcripción del papel al software y ofreciendo un dashboard analítico en tiempo real.
+###### LifeTable App es una aplicación web de código abierto diseñada para agilizar y automatizar el registro de observaciones biológicas, el cálculo de parámetros poblacionales, el armado de tablas de vida y el análisis de supervivencia en condiciones de laboratorio, minimizando el error humano de la transcripción del papel al software y ofreciendo un dashboard analítico en tiempo real.
 
 ------------
 
-### 🚀 Novedades en la Versión 1.1.0
+### 🚀 Novedades en la Versión 2.0
 
-- **Configuración adaptativa del ensayo:** Ahora es posible elegir que variables registrar 
-(mudas y/o fecundidad). Esto permite adaptar la interfaz a diferentes diseños experimentales, como bioensayos de toxicidad, pruebas de mortalidad o estudios de supervivencia en estadios especificos.
-- **Dashboard Analítico por Tratamiento:** Visualizá métricas del ensayo (Longevidad Media/Máxima, Desarrollo Ninfal y Proporción Sexual) sin salir del panel principal.
-- **Visualización de Estado:** Barras dinámicas de Supervivencia vs. Mortalidad para cada cohorte.
-- **Optimización Móvil:** UX refinada en el Modo Lupa para evitar despliegues accidentales del teclado en dispositivos táctiles.
+- ** Arquitectura de flujo Dual:** Ahora podés seleccionar entre una "Tabla de vida clásica" y el nuevo "Ensayo de Supervivencia" (optimizado para bioensayos de toxicidad y longevidad)
+- **Módulo de Supervivencia Dedicado:**
+  - **Flujo rápido:** Omite la validación de sexo, mudas y huevos para cargar la mortalidad de manera más rápida
+  - **Unidad de tiempo dinámica:** Permite registrar observaciones tanto en Días como en Horas.
+  - **Visualización Avanzada (Kaplan-Meier):** Gráfico interactivo de la probabilidad de supervivencia integrado directamente en el panel de resultados, exclusivo para ensayos de supervivencia.
+  - **Exportación lista para R:** El módulo de supervivencia genera matrices de datos depuradas de tres columnas ('ID', 'Estado', 'Tiempo Total'), formateadas específicamente para ser analizadas de inmediato en software estadístico como R o Python.
+    
+## ✨ Características Principales
 
-### Características
-
-- **Interfaz adaptativa:** Configurá tu experimento según tus necesidades. Desactiva los registros de fecundidad o mudas para obtener una interfaz simplificada, ideal para ensayos donde solo se evalua la supervivencia.
-
-- **Modo Lupa:** Interfaz con botones grandes diseñada para ser usada con una sola mano mientras se observa por el microscópio estereoscópico, optimizada para tablets y celulares
-
-- **Soporte para múltiples experimentos:** Panel de control que permite tener varios experimentos guardados, especialmente útil cuando se quieren comparar tratamientos.
-
-- **Estadísticas Descriptivas Automáticas:** Resumen dinámico de cada tratamiento.
-
-- **Soporte para dos modelos de metamorfosis:** Configuración para insectos hemimetábolos y holometábolos.
-
-- **Exportación de tablas:** Descarga de tablas con datos en formato `.csv` listas para analizar en **R**,  **Excel**, o el software estadístico de preferencia.
+- **Interfaz Adaptativa:** Configurá tu experimento según tus necesidades. Desactivá los registros de fecundidad o mudas para obtener una interfaz simplificada.
+- **Modo Lupa:** Interfaz con botones grandes diseñada para ser usada con una sola mano mientras se observa por el microscópio estereoscópico, optimizada para tablets y celulares, con prevención de despliegue accidental del teclado.
+- **Gestión de Múltiples Experimentos:** Panel de control (Dashboard) que permite tener varias cohortes o tratamientos guardados en simultáneo, ideal para comparar dosis o tratamientos de control.
+- **Dashboard Analítico:** Visualizá métricas en tiempo real (Longevidad Media/Máxima, Desarrollo Ninfal, Proporción Sexual) y barras dinámicas de Supervivencia vs. Mortalidad sin salir del panel principal.
+- **Estadísticas Descriptivas Automáticas:** Resumen dinámico y cálculo de parámetros en tiempo real para cada tratamiento.
+- **Soporte Metamórfico:** Configuración adaptada tanto para insectos hemimetábolos como holometábolos.
+- **Exportación Versátil:** Descarga de tablas crudas completas en formato `.csv` o matrices estructuradas para análisis complejos.
 
 
 ------------
@@ -47,10 +44,10 @@ Accedé a la aplicación aqui : **[Life Table App](https://lifetableapp.vercel.a
 
 ## 📱 Cómo utilizar LifeTable App
 
-1. **Configuración:** Definí el nombre del tratamiento, condiciones del experimento, número inicial de individuos, registro de mudas y el tipo de desarrollo (Hemimetábolo/Holometábolo). Podés elegir no registrar mudas ni fecundidad y hacer ensayos de supervivencia o toxicidad
-2. **Registro Diario:** Usá el **Modo Lupa** para marcar Supervivencia, Mudas o Fecundidad.
-3. **Monitoreo:** Revisá el panel de resultados y el resumen del ensayo para obtener los parámetros poblacionales y ver el progreso de cada individuo.
-4. **Análisis:** Una vez finalizado el ciclo, exportá los resultados en `.csv` si querés realizar análisis estadísticos utilizando un software externo
+1. **Configuración:** Al iniciar, elegí entre "Tabla de Vida" o "Supervivencia".Definí el nombre del tratamiento, condiciones, número inicial de individuos, registro de mudas y el tipo de desarrollo (Hemimetábolo/Holometábolo). Podés elegir no registrar mudas ni fecundidad y hacer ensayos de supervivencia o toxicidad
+2. **Registro Diario/Horario:** Usá el Modo Lupa para registrar el estado de cada individuo (Supervivencia, Mudas, Fecundidad) de forma secuencial y rápida.
+3. **Monitoreo:** Revisá el panel de resultados y las curvas de Kaplan-Meier para observar la tendencia poblacional y el progreso de la cohorte.
+4. **Análisis:** Al finalizar el ensayo, exportá los resultados en `.csv` para realizar contrastes de hipótesis o modelado estadístico en un software externo.
 
 ------------
 ## 💾 Privacidad y Datos
