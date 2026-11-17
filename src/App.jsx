@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import localforage from 'localforage'
 import './App.css'
 import { Toaster, toast}  from  'react-hot-toast'
-import { Bug } from 'lucide-react'
+import { Bug, CodeXml } from 'lucide-react'
 
 
 import MenuPrincipal from './components/MenuPrincipal'
@@ -10,6 +10,7 @@ import Configuracion from './components/Configuracion'
 import ModoLupa from './components/ModoLupa'
 import PanelResultados from './components/PanelResultados'
 import Dashboard from './components/Dashboard'
+import ConfiguracionSupervivencia from './components/ConfiguracionSupervivencia'
 
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
   const [activeTreatmentId, setActiveTreatmentId] = useState(null);
 
   const [setupData, setSetupData] = useState({
+    experimentType: 'classic',
+    timeUnit: 'days',
     name: '',
     settings: '',
     date: '',
@@ -208,6 +211,10 @@ function App() {
     e.target.value = null; 
   }
   const exportLifeTableCSV = () => {
+    
+    const isSurvival = experimentData.experimentType === 'survival';
+    const timeString = experimentData.timeUnit === 'hours' ? 'Hora' : 'Dia';
+
     // se calcula Lx, Tx y ex para el archivo exportable
     const extendedLifeTable = lifeTable.map((row, index, array) => {
       const nextRow = array[index + 1];
@@ -225,47 +232,69 @@ function App() {
     }
 
     // Encabezado con los nombres exactos
-    let csvContent = "Edad (x),Vivos (nx),Muertos (dx),Supervivencia (lx),Prob. de mortalidad (qx),Sobrev. Media (Lx),Dias por vivir (Tx),Esperanza de vida (ex)\n";
+    let csvContent = isSurvival
+      ? "Tiempo (x), Vivos (nx), Muertos (dx), Supervivencia (lx), Prob. de Mortalidad (qx), Sobrev. Media (Lx), Tiempo por vivir (Tx), Esperanza de vida (ex) \n"
+      : "Edad (x),Vivos (nx),Muertos (dx),Supervivencia (lx),Prob. de mortalidad (qx),Sobrev. Media (Lx),Dias por vivir (Tx),Esperanza de vida (ex)\n";
+    
     
     extendedLifeTable.forEach(row => {
       csvContent += `${row.x},${row.nx},${row.dx},${row.lx},${row.qx},${row.Lx.toFixed(3)},${row.Tx.toFixed(3)},${row.ex.toFixed(2)}\n`;
     });
     
-    downloadCSV(csvContent, `TablaVida_${experimentData.name}_Dia${day}.csv`);
+    downloadCSV(csvContent, `TablaVida_${experimentData.name}_${timeString}${day}.csv`);
   }
 
   const exportMatrixCSV = () => {
+    const isSurvival = experimentData.experimentType === 'survival';
+    const timeUnitLabel = experimentData.timeUnit === 'hours' ? 'horas' : 'días';
+    const timeString = experimentData.timeUnit === 'hours' ? 'Hora' : 'Dia';
+
+
     // Encabezados dinámicos
-    let headers = ["ID", "Estado", "Sexo", "Ultimo Estadio"];
-    stageNames.forEach(stage => headers.push(`Dias ${stage}`));
-    headers.push("Total Inmaduro");
-    headers.push("Dias Adulto");
-    headers.push("Longevidad Total");
+    let headers = [];
+    if (isSurvival) {
+      headers = ["ID", "Estado", `Tiempo Total (${timeUnitLabel})`];
+    } else {
+      headers = ["ID", "Estado", "Sexo", "Ultimo Estadio"];
+      stageNames.forEach(stage => headers.push(`Dias ${stage}`));
+      headers.push("Total Inmaduro");
+      headers.push("Dias Adulto");
+      headers.push("Longevidad Total");
 
-    if (experimentData.checkFecundity !== false) {
-      headers.push("Total Huevos");
+      if (experimentData.checkFecundity !== false) {
+        headers.push("Total Huevos") ;
+      }
     }
-
+    
     let csvContent = headers.join(",") + "\n";
 
     individuals.forEach(bug => {
-      const sumEggs = (oviposition) => {
+
+      let totalLongevity = bug.daysInStage;
+      Object.values(bug.history).forEach(val => {
+        if (typeof val === 'number') {
+          totalLongevity += val;
+        }
+      });
+
+      let row = [];
+      if (isSurvival) {
+        row = [
+          bug.id,
+          bug.status === 'DEAD' ? 'Muerto' : 'Vivo',
+          totalLongevity
+        ];
+      } else {
+        // Fila clásica
+        const sumEggs = (oviposition) => {
         if (!oviposition) return 0;
         return Object.values(oviposition).reduce((total, cant) => total + cant, 0);
       };
 
       const totalEggs = bug.sex === 'F' ? sumEggs(bug.oviposition) : '-';
-      // CORRECCIÓN 1: Usamos === en lugar de =
       const sexString = bug.sex === 'M' ? 'Macho' : (bug.sex === 'F' ? 'Hembra' : '-');
       const isAdult = bug.stage === 'ADULTO' || (bug.history['Muerte'] && bug.history['Muerte'].includes('ADULTO'));
       const adultDays = isAdult ? bug.daysInStage : '-';
-
-      let totalLongevity  =bug.daysInStage;
-      Object.values(bug.history).forEach(val  =>  {
-        if  (typeof val === 'number') {
-          totalLongevity  += val;
-        }
-      });
 
       let ultimoEstadio = bug.stage;
       if (bug.status === 'DEAD' && bug.history['Muerte']) {
@@ -275,8 +304,7 @@ function App() {
         }
       }
 
-      
-      let row = [
+      row = [
         bug.id,
         bug.status === 'DEAD' ? 'Muerto' : 'Vivo',
         sexString,
@@ -284,7 +312,7 @@ function App() {
       ];
 
       stageNames.forEach(stage => {
-        const hasCompleted = bug.history[stage] !== undefined;
+        const hasCompleted = bug.history [stage] !== undefined;
         const isCurrent = bug.stage === stage;
 
         if (hasCompleted) {
@@ -292,9 +320,9 @@ function App() {
         } else if (isCurrent) {
           row.push(bug.status === 'DEAD' ? bug.daysInStage : `(${bug.daysInStage}...)`);
         } else if (bug.status === 'DEAD') {
-          row.push('MI');
+          row.push ('MI');
         } else {
-          row.push('-'); 
+          row.push ('-');
         }
       });
 
@@ -302,10 +330,14 @@ function App() {
       row.push(totalNymph);
       row.push(adultDays);
       row.push(totalLongevity);
-      
+
       if (experimentData.checkFecundity !== false) {
         row.push(totalEggs);
+
+
+       }
       }
+      
       csvContent += row.join(",") + "\n";
     });
     
@@ -332,8 +364,15 @@ function App() {
   const startTable = () => {
     const n0 = parseInt(setupData.n0)
     const stages = parseInt(setupData.stageCount)
-    const registraMudas= setupData.checkMolt  === true || setupData.checkMolt === 'true'
-    
+
+    // Para que la app sepa que tipo de experimento se eligió
+
+    const isSurvival = currentStep === 'setup-survival'
+    const finalExperimentType = isSurvival ? 'survival' : 'classic'
+
+    const registraMudas = isSurvival ? false: (setupData.checkMolt  === true || setupData.checkMolt === 'true')
+    const registraFecundidad = isSurvival ? false : setupData.checkFecundity
+
     if (!setupData.name || !setupData.date || isNaN(n0) || n0 <= 0 ) {
       toast.error("Por favor completá el nombre, la fecha de inicio y el N° inicial", {
         style:  {borderRadius:'8px', background:  '#333', color:  '#fff'}
@@ -369,7 +408,11 @@ function App() {
     /// Empaquetar todo en un tratamiento
     const newTreatment  ={
       id: Date.now().toString(),  // generamos un codigo unico usando el reloj del sistema
-      config: { ...setupData  },  // Guardamos las condiciones del exp
+      config: { ...setupData,
+        experimentType: finalExperimentType,
+        checkMolt: registraMudas,
+        checkFecundity: registraFecundidad
+        },  // Guardamos las condiciones del exp
       stageNames: generatedStages,
       individuals:  newIndividuals,
       lifeTable:  [{ x: 0, nx: n0, lx: 1.000, dx: 0, qx: 0}],
@@ -378,7 +421,17 @@ function App() {
     
     setTreatments([...treatments, newTreatment])
     setActiveTreatmentId(newTreatment.id)
-    setSetupData({name: '', settings: '', date: '', n0: '', cycleType: 'hemimetabolous', stageCount: '', checkMolt: false, checkFecundity:  true})
+    setSetupData({
+      experimentType: 'classic',
+      timeUnit: 'days',
+      name: '', 
+      settings: '', 
+      date: '',
+      n0: '', 
+      cycleType: 'hemimetabolous', 
+      stageCount: '', 
+      checkMolt: false, 
+      checkFecundity:  true})
     
     setCurrentStep('table')
   }
@@ -527,6 +580,15 @@ function App() {
         />
       )}
 
+      {currentStep === 'setup-survival' && (
+        <ConfiguracionSupervivencia
+          setCurrentStep={setCurrentStep}
+          experimentData={setupData}
+          handleConfigChange={handleConfigChange}
+          startTable={startTable}
+        />
+      )}
+
       {currentStep === 'dashboard' && (
         <Dashboard 
           treatments={treatments}
@@ -582,14 +644,38 @@ function App() {
         </div>
 
         <p>
-          <strong>LifeTable App</strong> v1.1.0 &copy; {new Date().getFullYear()}
+          <strong>LifeTable App</strong> v2.0.0 &copy; {new Date().getFullYear()}
         </p>
         <p>
           Desarrollado por Alejandro Nicolás Melchert PhD
         </p>
         <p style={{ fontSize: '0.75rem', marginTop: '10px', opacity: 0.7 }}>
-          Herramienta de código abierto para el cálculo de parámetros poblacionales y tablas de vida en laboratorio.
+          Herramienta de código abierto para análisis poblacionales y de supervivencia en laboratorio.
         </p>
+
+        {/* LINK A GITHUB */}
+        <div style={{ marginTop: '20px' }}>
+          <a
+            href="https://github.com/nicomelchert10/LifeTable_App"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{display: 'inline-flex', alignItems: 'center', gap:'6px', fontWeight:'500'}}
+            >
+              <svg 
+                width="18" 
+                height="18" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+              Código fuente, fórmulas y documentación (Github)
+            </a>
+        </div>
       </footer>
 
     </div>
