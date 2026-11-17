@@ -6,6 +6,9 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
   // Estado para controlar que resumen está abierto
   const [expandedId, setExpandedId] = useState(null);
 
+  //nuevo estado para controlar que mostrarmos en "agregar nuevo"
+  const [showNewOptions, setShowNewOptions] = useState (false);
+
   const toggleExpand  = (id)  =>  {
     setExpandedId(expandedId  === id  ? null  : id);
   };
@@ -25,6 +28,12 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
       ) : (
         <div className="treatments-grid">
           {treatments.map((t) => {
+
+            //VARIABLES DE CONTEXTO
+
+            const isSurvival = t.config.experimentType === 'survival';
+            const timeUnitSingular = t.config.timeUnit === 'hours' ? 'Hora' : 'Día';
+            const timeUnitPlural = t.config.timeUnit === 'hours' ? 'horas' : 'días';
 
             //Cálculos básicos
             const n0  = parseInt(t.config.n0);
@@ -88,8 +97,8 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
 
             const isOngoing = vivos > 0;  // Verificamos si quedan vivos
             const isNinfalOngoing=  ninfasVivas > 0;
-            const devNinfal = isNinfalOngoing ? 'En curso...' : (ninfalCount > 0 ? (ninfalTotal / ninfalCount).toFixed(1) + ' días' : '-');
-            const longevidad = isOngoing  ? 'En curso...' : (deadCount > 0 ? (longTotal / deadCount).toFixed(1) + ' días' : '-');
+            const devNinfal = isNinfalOngoing ? 'En curso...' : (ninfalCount > 0 ? (ninfalTotal / ninfalCount).toFixed(1) + ` ${timeUnitPlural}` : '-');
+            const longevidad = isOngoing  ? 'En curso...' : (deadCount > 0 ? (longTotal / deadCount).toFixed(1) + ` ${timeUnitPlural}` : '-');
             const promHuevos = femaleCount > 0 ? (eggsTotal / femaleCount).toFixed(1) + ' h/♀' : '-';
             const totalSexed = males + females;
             const propSexos = totalSexed > 0 ? (
@@ -116,7 +125,7 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
                     <h3 className="treatment-title">{t.config.name}</h3>
                     <p className="text-muted treatment-info">
                       <span ClassName="icon-text">
-                      <Calendar size={16}/> Día actual: <strong>{t.day}</strong> </span> | Sobrevivientes: <strong>{vivos} / {n0}</strong>
+                      <Calendar size={16}/> {timeUnitSingular} actual: <strong>{t.day}</strong> </span> | Sobrevivientes: <strong>{vivos} / {n0}</strong>
                     </p>
                   </div>
                   
@@ -159,7 +168,7 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
                     {/* Grilla de Métricas */}
                     <div className="metrics-grid">
                       
-                      {t.config.checkMolt !== false && (
+                      {!isSurvival && t.config.checkMolt !== false && (
                         <div className="metric-box">
                           <p className="metric-title" >Desarrollo Ninfal Medio</p>
                           <p 
@@ -206,14 +215,47 @@ export default function Dashboard({ treatments, setActiveTreatmentId, setCurrent
         </div>
       )}
 
-      <div className="dashboard-footer">
-        <button className="btn-secondary" onClick={() => {
-          setActiveTreatmentId(null);
-          setCurrentStep('setup');
-        }}>
-          <span className="btn-icon-center">
-          <PlusCircle size={18} /> Agregar Nuevo</span>
-        </button>
+<div className="dashboard-footer">
+        {!showNewOptions ? (
+          <button className="btn-secondary" onClick={() => setShowNewOptions(true)}>
+            <span className="btn-icon-center">
+            <PlusCircle size={18} /> Agregar Nuevo</span>
+          </button>
+        ) : (
+          <div className="fade-in-section" style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+            <h4 style={{ margin: '0', color: '#fff' }}>Seleccioná el tipo de ensayo:</h4>
+            
+            <button 
+              className="btn-primary" 
+              onClick={() => {
+                setActiveTreatmentId(null);
+                setCurrentStep('setup');
+              }} 
+              style={{ width: '100%', maxWidth: '320px', background: 'rgba(76, 175, 80, 0.1)', marginTop: '0' }}
+            >
+               Tabla de Vida Clásica
+            </button>
+
+            <button 
+              className="btn-primary" 
+              onClick={() => {
+                setActiveTreatmentId(null);
+                setCurrentStep('setup-survival');
+              }} 
+              style={{ width: '100%', maxWidth: '320px', background: 'rgba(244, 67, 54, 0.1)', borderColor: '#d32f2f', color: '#d32f2f', marginTop: '0' }}
+            >
+               Ensayo de Supervivencia
+            </button>
+
+            <button 
+              className="btn-secondary" 
+              onClick={() => setShowNewOptions(false)} 
+              style={{ marginTop: '10px' }}
+            >
+              &larr; Cancelar
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

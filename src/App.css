@@ -5,7 +5,7 @@
   --bg-color: #1e1e1e;
   --card-bg: #2b2b2b;
   --text-color: #f5f5f5;
-  --text-muted: #aaaaaa;
+  --text-muted: #e2e2e2;
   
   --primary-green: #4CAF50;
   --primary-hover: #45a049;
@@ -394,6 +394,7 @@ button {
   transition: all 0.2s ease;
 }
 
+
 button:active {
   transform: scale(0.98);
 }
@@ -414,8 +415,9 @@ button:active {
 .btn-primary:hover {
   background-color: var(--primary-green);
   color:white;
+  border-color: var(--primary-green);
   transform: translateY(-2px);
-  box-shadow:0 4px 8px rgba(76,175,80,0.3)
+  box-shadow:0 4px 8px rgba(0, 0, 0, 0.3)
 }
 
 /* Botón sutil para acciones secundarias (Volver, Descargar) */
@@ -723,6 +725,37 @@ button:active {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: white;
   color: white;
+}
+
+/* BOTÓN ROJO - INICIAR SUPERVIVENCIA */
+.btn-surviv {
+  background-color: rgba(244, 67, 54, 0.05);
+  border: 1px solid #F44336;
+  color: #F44336;
+  padding: 14px 24px;
+  font-size: 1.1rem;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-surviv:hover {
+  background-color: rgba(244, 67, 54, 0.15);
+  color: #F44336;
+  border-color: #F44336;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(244, 67, 54, 0.15);
+}
+
+
+.btn-surviv:active {
+  transform: scale(0.98);
+}
+.btn-surviv:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(244,67,54,0.3);
 }
 
 /* AJUSTES ESPECÍFICOS PARA PC (ancho > 768px) */

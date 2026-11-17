@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChartBar, Download, FileChartLine, ChevronUp, ChevronDown} from 'lucide-react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 
 export default function PanelResultados({
@@ -7,6 +8,11 @@ export default function PanelResultados({
 }) {
 
   const [showStats, setShowStats] = useState(false)
+
+  //VARIABLES DE CONTEXTO NUEVAS
+  const isSurvival  = experimentData.experimentType === 'survival';
+  const timeUnitSingular = experimentData.timeUnit === 'hours' ? 'Hora' : 'Día';
+  const timeUnitPlural = experimentData.timeUnit === 'hours' ? 'horas' : 'días';
 
   const sumEggs = (oviposition) => {
     if (!oviposition) return 0;
@@ -84,6 +90,13 @@ export default function PanelResultados({
     extendedLifeTable[i].ex = lxValue > 0 ? (accumulatedT / lxValue) : 0;
   }
 
+
+  //DATOS PARA KAPLAN MEIER
+  const chartData = lifeTable.map(row => ({
+    x: row.x,
+    lx: parseFloat(row.lx)
+  }));
+
   //------------
 
   return (
@@ -92,8 +105,8 @@ export default function PanelResultados({
         <div className="header-info">
           <h2 style={{margin: '0 0 5px 0'}}>{experimentData.name}</h2>
           <p className="text-muted" style={{margin: 0}}>
-            Día {day} | N0: {experimentData.n0}
-            {experimentData.checkMolt ?` | Estadíos: ${experimentData.stageCount}` : ''}
+            {timeUnitSingular} {day} | N0: {experimentData.n0}
+            {!isSurvival && experimentData.checkMolt ?` | Estadíos: ${experimentData.stageCount}` : ''}
           </p>
         </div>
       
@@ -117,13 +130,14 @@ export default function PanelResultados({
       </div>
 
       <button className="btn-large-action" onClick={startDailyCheck}>
-          Iniciar Revisión del Día {day + 1}
+          Iniciar Revisión ({timeUnitSingular}) {day + 1}
       </button>
 
       {/* TABLA 1: RESUMEN POBLACIONAL */}
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px', marginBottom: '15px'}}>
         <h3 style={{margin: 0,  display:  'flex', alignItems: 'center', gap:  '8px'}}>
-          <ChartBar size={24}/> Tabla de Vida General</h3>
+          <ChartBar size={24}/> {isSurvival ? 'Tabla de Supervivencia' : 'Tabla de Vida General'}
+          </h3>
         <button className="btn-export" onClick={exportLifeTableCSV}>
           <Download size={20}/> Exportar CSV
         </button>
@@ -133,13 +147,13 @@ export default function PanelResultados({
         <table className="data-table">
           <thead>
             <tr>
-              <th>Edad (x)</th>
+              <th>Tiempo (x)</th>
               <th>Vivos (nx)</th>
               <th>Muertos (dx)</th>
               <th>Supervivencia (lx)</th>
               <th>Prob. de mortalidad (qx)</th>
               <th style={{borderLeft: '2px solid #444'}}>Sobrev. Media (Lx)</th>
-              <th>Días por vivir (Tx)</th>
+              <th>Tiempo por vivir (Tx)</th>
               <th style={{color: '#03A9F4'}}>Esperanza de vida (ex)</th>
             </tr>
           </thead>
@@ -161,6 +175,54 @@ export default function PanelResultados({
         </table>
       </div>
 
+      {/* GRÁFICO DE KAPLAN-MEIER (SOLO PARA SUPERVIVENCIA) */}
+
+      {isSurvival && lifeTable.length > 0 && (
+        <div style={{ marginTop: '30px', background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '8px', border: '1px solid #444' }}>
+          <h4 style={{ margin: '0 0 20px 0', textAlign: 'center', color: '#F44336', fontSize: '1.1rem' }}>
+            Curva de Supervivencia (Kaplan-Meier)
+          </h4>
+          
+          <div style={{ width: '100%', height: '280px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444" vertical={false} />
+                
+                <XAxis 
+                  dataKey="x" 
+                  stroke="#aaa" 
+                  tick={{fill: '#888', fontSize: 12}} 
+                  minTickGap={15}
+                />
+                
+                <YAxis 
+                  stroke="#aaa" 
+                  domain={[0, 1]} 
+                  tick={{fill: '#888', fontSize: 12}}
+                  tickFormatter={(val) => `${(val * 100)}%`}
+                />
+                
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#2b2b2b', borderColor: '#444', borderRadius: '8px', color: '#fff' }}
+                  labelFormatter={(label) => `${timeUnitSingular} ${label}`}
+                  formatter={(value) => [`${(value * 100).toFixed(1)}%`, 'Supervivencia (lx)']}
+                />
+                
+                <Line 
+                  type="stepAfter" 
+                  dataKey="lx" 
+                  stroke="#F44336" 
+                  strokeWidth={3}
+                  dot={false}
+                  activeDot={{ r: 6, fill: '#F44336', strokeWidth: 0 }} 
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+      {/*......................*/}
+
       {/* TABLA 2: DETALLE INDIVIDUAL (TABLA COMPLETA) */}
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop:'50px', marginBottom:'15px'}}>
         <h3 style={{margin: 0}}> Tabla de Seguimiento Individual</h3>
@@ -175,16 +237,16 @@ export default function PanelResultados({
             <tr>
               <th>ID</th>
               <th>Estado</th>
-              <th>Sexo</th>
-              {stageNames.map(stage => (
-                <th key={stage}>Días {stage}</th>
+              {!isSurvival && <th>Sexo</th>}
+              {!isSurvival && stageNames.map(stage => (
+                <th key = {stage}>Días {stage}</th>
               ))}
-              <th style={{ background: 'rgba(255, 255, 255, 0.1)' }}>Total Inmaduro</th>
-              <th style={{ background: 'rgba(33, 150, 243, 0.1)' }}>Días Adulto</th>
-              <th style={{ background: 'rgba(33, 150, 243, 0.1)' }}>Longevidad Total</th>
-              {experimentData.checkFecundity != false ?  ( //oculta la columna si checkFecundity es falso
+              {!isSurvival && <th style={{ background: 'rgba(255, 255, 255, 0.1)' }}>Total Inmaduro</th>}
+              {!isSurvival && <th style={{ background: 'rgba(33, 150, 243, 0.1)' }}>Días Adulto</th>}
+              <th style={{ background: 'rgba(33, 150, 243, 0.1)' }}>{isSurvival ? `Tiempo Total (${timeUnitPlural})` : 'Longevidad Total'}</th>
+              {!isSurvival && experimentData.checkFecundity != false && ( //oculta la columna si checkFecundity es falso
                 <th style={{ background: 'rgba(233, 30, 99, 0.1)' }}>Total Huevos</th>
-              ) : null}
+              )}
               
             </tr>
           </thead>
@@ -209,23 +271,21 @@ export default function PanelResultados({
                   <td style={{fontWeight: 'bold', color: bug.status === 'DEAD' ? '#ff5252' : '#4CAF50'}}>
                     {bug.status === 'DEAD' ? '✝ Muerto' : 'Vivo'}
                   </td>
-                  <td style={{fontSize: '1.2rem'}}>{sexIcon}</td>
                   
-                  {stageNames.map(stage => {
+                  {/* Celdas condicionales */}
+                  {!isSurvival && <td style={{fontSize: '1.2rem'}}>{sexIcon}</td>}
+                  
+                  {!isSurvival && stageNames.map(stage => {
                     const hasCompleted = bug.history[stage] !== undefined;
                     const isCurrent = bug.stage === stage;
-                    
-
                     let cellContent = '-';
                     let cellStyle = {};
 
                     if (hasCompleted) {
                       cellContent = bug.history[stage];
                     } else if (isCurrent) {
-                      /// Muestra los días vividos en el estadio actual, aún si está muerto
                       cellContent = bug.status  === 'DEAD'  ? bug.daysInStage : `(${bug.daysInStage}...)`;
                     } else if (bug.status === 'DEAD') {
-                      /// Si está muerto y no completó este estadio, ni era el actual, pone MI
                       cellContent = 'MI';
                       cellStyle = { backgroundColor: '#d32f2f', color: 'white', fontWeight: 'bold' };
                     }
@@ -237,18 +297,19 @@ export default function PanelResultados({
                     );
                   })}
                   
-                  <td style={{ fontWeight: 'bold', background: bug.status === 'DEAD' && bug.stage !== 'ADULTO' ? '#d32f2f' : 'rgba(255, 255, 255, 0.05)', color: bug.status === 'DEAD' && bug.stage !== 'ADULTO' ? 'white' : 'inherit' }}>
-                    {bug.status === 'DEAD' && bug.stage !== 'ADULTO' ? 'MI' : calculateTotalNymphDays(bug)}
-                  </td>
+                  {!isSurvival && (
+                    <td style={{ fontWeight: 'bold', background: bug.status === 'DEAD' && bug.stage !== 'ADULTO' ? '#d32f2f' : 'rgba(255, 255, 255, 0.05)', color: bug.status === 'DEAD' && bug.stage !== 'ADULTO' ? 'white' : 'inherit' }}>
+                      {bug.status === 'DEAD' && bug.stage !== 'ADULTO' ? 'MI' : calculateTotalNymphDays(bug)}
+                    </td>
+                  )}
 
-                  <td style={{ fontWeight: 'bold', color: '#64B5F6' }}>{adultDays}</td>
+                  {!isSurvival && <td style={{ fontWeight: 'bold', color: '#64B5F6' }}>{adultDays}</td>}
 
                   <td style={{  fontWeight: 'bold', color: '#FFCA28' }}>{totalLongevity }</td>
               
-                  {experimentData.checkFecundity  !== false ? 
-                    (<td style={{ fontWeight: 'bold', color: '#F06292' }}>{totalEggs}</td>
-                  ): null}
-                
+                  {!isSurvival && experimentData.checkFecundity  !== false && (
+                    <td style={{ fontWeight: 'bold', color: '#F06292' }}>{totalEggs}</td>
+                  )}
                 </tr>
               )
             })}
@@ -257,7 +318,7 @@ export default function PanelResultados({
       </div>
 
       {/* BOTÓN DESPLEGABLE ESTADÍSTICO  */}
-      { experimentData.checkFecundity !== false && popData && popData.stats.R0 > 0 && (
+      {!isSurvival && experimentData.checkFecundity !== false && popData && popData.stats.R0 > 0 && (
         <div style={{marginTop: '50px', textAlign: 'center'}}>
           <button 
             onClick={() => setShowStats(!showStats)}
@@ -281,9 +342,9 @@ export default function PanelResultados({
       )}
 
       {/* PANEL ESTADÍSTICO */}
-      { experimentData.checkFecundity !== false &&  showStats && popData && (
+      {!isSurvival && experimentData.checkFecundity !== false &&  showStats && popData && (
         <div style={{ background: 'linear-gradient(145deg, #1e1e1e, #2a2a2a)', border: '1px solid #4CAF50', borderRadius: '12px', padding: '20px', marginTop: '15px', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', marginBottom: '40px'}}>
-          
+          {/* ... Todo el panel estadístico sigue igual, lo dejé intacto pero ahora solo se renderiza si no es supervivencia ... */}
           <div style={{display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'space-between', marginBottom: '30px'}}>
             <div style={{flex: '1 1 18%'}}>
               <p className="text-muted" style={{margin: '0 0 5px 0', fontSize: '0.9rem'}}>Tasa Neta Rep. (R₀)</p>

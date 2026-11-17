@@ -8,18 +8,23 @@ export default function ModoLupa({
   const [eggsToday, setEggsToday] = useState('')
   const [localSex, setLocalSex] = useState(null)
 
+  //variables de contexto NUEVAS!
+
+  const isSurvival = experimentData.experimentType === 'survival' ;
+  const timeUnitSingular = experimentData.timeUnit === 'hours' ? 'Hora' : 'Dia';
+
   useEffect(() => {
     setEggsToday('')
     setLocalSex(currentBug.sex || null) 
   }, [currentBug.id, currentBug.sex])
 
   const handleAction = (action) => {
-    if (currentBug.stage === 'ADULTO' && !localSex) {
+    if (!isSurvival && currentBug.stage === 'ADULTO' && !localSex) {
       toast.error("Por favor, seleccioná Macho o Hembra antes de continuar.");
       return;
     }
     const huevos = eggsToday === '' ? 0 : parseInt(eggsToday)
-    processIndividual(action, { sex: localSex, eggs: huevos })
+    processIndividual(action, { sex: isSurvival ? null : localSex, eggs: huevos })
   }
 
   // LÓGICA DE CONFIRMACIÓN CON TOAST INTERACTIVO
@@ -88,7 +93,7 @@ export default function ModoLupa({
           )}
         </div>
 
-        <h2>Día {day + 1}</h2>
+        <h2>{timeUnitSingular} {day + 1}</h2>
         <p className="text-muted" style={{fontSize: '1.2rem'}}>
           Revisando Individuo <strong>#{currentBug.id}</strong>
         </p>
@@ -96,7 +101,7 @@ export default function ModoLupa({
       </div>
 
       <div className="lupa-controls">
-        {currentBug.stage === 'ADULTO' && (
+        {!isSurvival && currentBug.stage === 'ADULTO' && (
           <div style={{background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '8px', marginBottom: '20px'}}>
             <h4 style={{margin: '0 0 10px 0', textAlign: 'center'}}>Sexo del Individuo:</h4>
             <div style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
@@ -129,7 +134,7 @@ export default function ModoLupa({
         )}
 
         {/* INPUT DE HUEVOS */}
-        {experimentData.checkFecundity !== false && currentBug.stage === 'ADULTO' && localSex === 'F' && (
+        {!isSurvival && experimentData.checkFecundity !== false && currentBug.stage === 'ADULTO' && localSex === 'F' && (
           <div style={{background: 'rgba(233, 30, 99, 0.1)', border: '1px solid #E91E63', padding: '15px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center'}}>
             <label style={{fontSize: '1.1rem', display: 'block', marginBottom: '10px', color: '#ffbadd'}}>
               Huevos puestos hoy:
@@ -143,7 +148,7 @@ export default function ModoLupa({
         )}
 
         {/* BOTONES DE SUPERVIVENCIA */}
-        {(currentBug.stage !== 'ADULTO' || localSex) && (
+        {(isSurvival || currentBug.stage !== 'ADULTO' || localSex) && (
           <>
             <div className="main-buttons-row">
               <button className="btn-lupa btn-alive" onClick={() => handleAction('ALIVE')}>
@@ -154,7 +159,7 @@ export default function ModoLupa({
               </button>
             </div>
 
-            {experimentData.checkMolt && currentBug.stage !== 'ADULTO' && (
+            {!isSurvival && experimentData.checkMolt && currentBug.stage !== 'ADULTO' && (
               <button className='btn-molt' onClick={() => handleAction('MOLT')}>
                 <span className='lupa-label'> MUDÓ (Pasar a {getNextStage(currentBug.stage)})</span>
               </button>
